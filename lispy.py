@@ -148,6 +148,7 @@ def lisp_eval(prog, env=None):
         return env[prog]
 
     if prog[0] == 'begin':
+        val = None
         for expr in prog[1:]:
             val = lisp_eval(expr, env)
 

@@ -289,6 +289,14 @@ class EvalTestCase(unittest.TestCase):
         env['foo'].assert_called_once_with(1)
         self.assertEqual(val, 42)
 
+    def test_empty_begin_doesnt_crash(self):
+        """
+        Checks that an empty begin statement doesn't crash but raises a syntax
+        error.
+        """
+        prog = ['begin']
+        self.assertIsNone(lisp_eval(prog))
+
     def test_missing_parameter(self):
         """
         Checks if the correct syntax error is raised when missing a parameter
