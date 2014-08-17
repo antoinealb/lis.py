@@ -180,7 +180,8 @@ def input_expression():
     result = [s]
 
     while level:
-        s = input("... ")
+        prompt = "... " + "  " * level
+        s = input(prompt)
         level += s.count('(')
         level -= s.count(')')
         result.append(s)
