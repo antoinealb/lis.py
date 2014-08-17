@@ -183,29 +183,29 @@ class EnvironmentFactoryTestCase(unittest.TestCase):
 
 class EvalTestCase(unittest.TestCase):
     def test_eval_litterals(self):
-        self.assertEqual(lisp_eval(3), 3)
-        self.assertEqual(lisp_eval(3.2), 3.2)
+        self.assertEqual(eval_prog(3), 3)
+        self.assertEqual(eval_prog(3.2), 3.2)
 
     def test_set_variable(self):
         """
         Checks that setting a variable returns an updated Environment.
         """
         env = Environment()
-        lisp_eval(['set!', 'foo', 42], env)
+        eval_prog(['set!', 'foo', 42], env)
         self.assertEqual(env['foo'], 42)
 
     def test_set_variable_empty_env(self):
         """
         Checks that we can set a value even if no environment is provided.
         """
-        lisp_eval(['set!', 'foo', 42])
+        eval_prog(['set!', 'foo', 42])
 
     def test_get_variable(self):
         """
         Checks that we can set then get a variable.
         """
         env = Environment(foo=42)
-        result = lisp_eval('foo', env)
+        result = eval_prog('foo', env)
         self.assertEqual(result, 42)
 
     def test_if_true(self):
@@ -213,7 +213,7 @@ class EvalTestCase(unittest.TestCase):
         Checks that the true condition of the if is taken correctly.
         """
         prog = ['if', 1, 42, 0]
-        result = lisp_eval(prog)
+        result = eval_prog(prog)
         self.assertEqual(result, 42)
 
     def test_if_false(self):
@@ -221,7 +221,7 @@ class EvalTestCase(unittest.TestCase):
         Checks that the false branch of the if works too.
         """
         prog = ['if', 0, 42, 0]
-        result = lisp_eval(prog)
+        result = eval_prog(prog)
         self.assertEqual(result, 0)
 
     def test_if_condition_needs_evaluation(self):
@@ -231,7 +231,7 @@ class EvalTestCase(unittest.TestCase):
         """
         env = Environment(cond=0)
         prog = ['if', 'cond', 1, 0]
-        result = lisp_eval(prog, env)
+        result = eval_prog(prog, env)
         self.assertEqual(result, 0)
 
     def test_if_condition_values_works_too(self):
@@ -241,11 +241,11 @@ class EvalTestCase(unittest.TestCase):
         env = Environment(foo=42, bar=84)
 
         prog = ['if', 1, 'foo', 'bar']
-        result = lisp_eval(prog, env)
+        result = eval_prog(prog, env)
         self.assertEqual(result, 42)
 
         prog = ['if', 0, 'foo', 'bar']
-        result = lisp_eval(prog, env)
+        result = eval_prog(prog, env)
         self.assertEqual(result, 84)
 
     def test_call(self):
@@ -255,14 +255,14 @@ class EvalTestCase(unittest.TestCase):
         env = Environment()
         env['f'] = lambda x: x**2
         prog = ['f', 3]
-        self.assertEqual(lisp_eval(prog, env), 9)
+        self.assertEqual(eval_prog(prog, env), 9)
 
     def test_can_create_lambda(self):
         """
         Checks if we can create a simple lambda.
         """
         prog = ['lambda', ['x'], 'x']
-        f = lisp_eval(prog)
+        f = eval_prog(prog)
         self.assertEqual(3, f(3))
 
     def test_more_complicated_lambda(self):
@@ -272,7 +272,7 @@ class EvalTestCase(unittest.TestCase):
         env = Environment()
         env['+'] = lambda x,y:x+y # simple add operator
         prog = ['lambda', ['x', 'y'], ['+', 'x', 'y']]
-        f = lisp_eval(prog, env)
+        f = eval_prog(prog, env)
         self.assertEqual(5, f(3, 2))
 
     def test_begin(self):
@@ -284,7 +284,7 @@ class EvalTestCase(unittest.TestCase):
 
         prog = ['begin', ['foo', 1], 42]
 
-        val = lisp_eval(prog, env)
+        val = eval_prog(prog, env)
 
         env['foo'].assert_called_once_with(1)
         self.assertEqual(val, 42)
@@ -295,7 +295,7 @@ class EvalTestCase(unittest.TestCase):
         error.
         """
         prog = ['begin']
-        self.assertIsNone(lisp_eval(prog))
+        self.assertIsNone(eval_prog(prog))
 
     def test_missing_parameter(self):
         """
@@ -306,7 +306,7 @@ class EvalTestCase(unittest.TestCase):
         prog = [['lambda', ['x', 'y'], 'x'], 3]
 
         with self.assertRaises(LispMissingParameterError):
-            lisp_eval(prog, env)
+            eval_prog(prog, env)
 
 
 class IntegrationTesting(unittest.TestCase):
@@ -320,8 +320,8 @@ class IntegrationTesting(unittest.TestCase):
         env = create_base_env()
         prog1 = tokenize('(set! double (lambda (x) (+ x x)))')
         prog2 = tokenize('(double 3)')
-        lisp_eval(prog1, env)
-        result = lisp_eval(prog2, env)
+        eval_prog(prog1, env)
+        result = eval_prog(prog2, env)
         self.assertEqual(6, result)
 
     def test_can_create_whole_program(self):
@@ -347,7 +347,7 @@ class IntegrationTesting(unittest.TestCase):
         """
         prog = create_prog(prog_content)
         env = create_base_env()
-        lisp_eval(prog, env)
+        eval_prog(prog, env)
         self.assertEqual(env['result'], 5)
 
     def test_recursion(self):
@@ -368,7 +368,7 @@ class IntegrationTesting(unittest.TestCase):
         prog = create_prog(prog)
 
         env = create_base_env()
-        val = lisp_eval(prog, env)
+        val = eval_prog(prog, env)
         self.assertEqual(val, 120)
 
     def test_multiple_assignment(self):
@@ -378,7 +378,7 @@ class IntegrationTesting(unittest.TestCase):
         """
         prog = create_prog(prog)
         env = create_base_env()
-        lisp_eval(prog, env)
+        eval_prog(prog, env)
 
         k = env.keys()
 

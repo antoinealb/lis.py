@@ -118,7 +118,7 @@ def create_prog(prog_content):
     prog_content = "(begin {})".format(prog_content)
     return tokenize(prog_content)
 
-def lisp_eval(prog, env=None):
+def eval_prog(prog, env=None):
 
     if env is None:
         env = Environment()
@@ -128,7 +128,7 @@ def lisp_eval(prog, env=None):
 
     if prog[0] == 'set!':
         varname = prog[1]
-        varvalue = lisp_eval(prog[2], env)
+        varvalue = eval_prog(prog[2], env)
         env[varname] = varvalue
         return
 
@@ -139,7 +139,7 @@ def lisp_eval(prog, env=None):
             if len(args) < len(argument_names):
                 raise LispMissingParameterError
             updated_env = Environment(env, zip(argument_names, args))
-            return lisp_eval(expression, updated_env)
+            return eval_prog(expression, updated_env)
 
         f.argument_count = len(argument_names)
         return f
@@ -150,19 +150,19 @@ def lisp_eval(prog, env=None):
     if prog[0] == 'begin':
         val = None
         for expr in prog[1:]:
-            val = lisp_eval(expr, env)
+            val = eval_prog(expr, env)
 
         return val
 
     if prog[0] == 'if':
-        cond = lisp_eval(prog[1], env)
+        cond = eval_prog(prog[1], env)
         if cond:
-            return lisp_eval(prog[2], env)
+            return eval_prog(prog[2], env)
         else:
-            return lisp_eval(prog[3], env)
+            return eval_prog(prog[3], env)
 
     # If we get there it means that we have a function call
-    args = [lisp_eval(v, env) for v in prog]
+    args = [eval_prog(v, env) for v in prog]
     func = args.pop(0)
 
     return func(*args)
@@ -196,13 +196,13 @@ def main():
         with open(sys.argv[1]) as f:
             prog = create_prog(f.read())
 
-        lisp_eval(prog, env)
+        eval_prog(prog, env)
 
     else:
         while True:
             prog = input_expression()
             prog = create_prog(prog)
-            result = lisp_eval(prog, env)
+            result = eval_prog(prog, env)
 
             if result is not None:
                 print("=> {}".format(result))
