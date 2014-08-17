@@ -196,13 +196,14 @@ def main():
 
         lisp_eval(prog, env)
 
-    while True:
-        prog = input_expression()
-        prog = create_prog(prog)
-        result = lisp_eval(prog, env)
+    else:
+        while True:
+            prog = input_expression()
+            prog = create_prog(prog)
+            result = lisp_eval(prog, env)
 
-        if result is not None:
-            print("=> {}".format(result))
+            if result is not None:
+                print("=> {}".format(result))
 
 
 if __name__ == "__main__":
