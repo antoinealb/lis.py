@@ -8,7 +8,13 @@ def main():
 
     if len(sys.argv) > 1:
         with open(sys.argv[1]) as f:
-            prog = create_prog(f.read())
+            content = f.read().splitlines()
+
+            # Allows usage as scripts
+            if content[0].startswith("#!"):
+                content = content[1:]
+
+            prog = create_prog("\n".join(content))
 
         eval_prog(prog, env)
 

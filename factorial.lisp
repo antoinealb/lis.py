@@ -1,3 +1,5 @@
+#!./interpreter.py
+
 ; This little example program computes the factorial of a number using a
 ; recursive approach.
 (set! factorial
