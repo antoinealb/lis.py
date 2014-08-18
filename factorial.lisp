@@ -12,4 +12,5 @@
   )
 
 ; Should display 120
+(display "The result should be 120:")
 (display (factorial 5))
