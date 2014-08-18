@@ -166,6 +166,9 @@ def eval_prog(prog, env=None):
 
         return f
 
+    if prog[0] == 'quote':
+        return prog[1]
+
     if prog[0] == 'begin':
         val = None
         for expr in prog[1:]:

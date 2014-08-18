@@ -351,6 +351,14 @@ class EvalTestCase(unittest.TestCase):
         prog = ""
         self.assertEqual(eval_prog(prog), '')
 
+    def test_quote(self):
+        """
+        Checks if the quote operator works.
+        """
+        prog = ['quote', [Identifier('a'), 'b', 'c']]
+        res = eval_prog(prog)
+        self.assertEqual(res, [Identifier('a'), 'b', 'c'])
+
 
 class IntegrationTesting(unittest.TestCase):
     """
