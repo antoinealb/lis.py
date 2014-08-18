@@ -72,6 +72,9 @@ class TokenizerTestCase(unittest.TestCase):
         prog = tokenize('("foo bar 2000")')
         self.assertEqual(prog, ['foo bar 2000'])
 
+        prog = tokenize('(" ")')
+        self.assertEqual(prog, [' '])
+
 class EnvironmentTestCase(unittest.TestCase):
 
     def test_env_find_variable(self):

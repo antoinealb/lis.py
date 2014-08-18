@@ -109,7 +109,7 @@ def tokenize(prog):
                 return result
 
             elif val.startswith('"'):
-                while not val.endswith('"'):
+                while not val.endswith('"') or len(val) == 1:
                     val = val + " " + prog.pop(0)
                 result.append(val[1:-1])
 

@@ -30,7 +30,10 @@
       (displayln "")
       (if (= testsFailed 0)
         (displayln "All tests ok")
-        (displayln "Some tests failed")
+        (begin
+          (display testsFailed)
+          (displayln " tests failed")
+          )
         )
       )
     )
