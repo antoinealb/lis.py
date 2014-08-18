@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import unittest
-from unittest.mock import *
+from unittest.mock import MagicMock, patch
 from lispy import *
 
 class AtomTestCase(unittest.TestCase):
@@ -37,14 +37,14 @@ class TokenizerTestCase(unittest.TestCase):
         Checks if a list with many elements works too.
         """
         prog = "(1 2 3)"
-        self.assertEqual([1,2,3], tokenize(prog))
+        self.assertEqual([1, 2, 3], tokenize(prog))
 
     def test_nested_list(self):
         """
         Checks if a list works with nested lists.
         """
         prog = '((1 2 3))'
-        self.assertEqual([[1,2,3]], tokenize(prog))
+        self.assertEqual([[1, 2, 3]], tokenize(prog))
 
     def test_can_mix_lists_and_atoms(self):
         """
@@ -156,21 +156,21 @@ class EnvironmentFactoryTestCase(unittest.TestCase):
         """
         Checks that basic math operator works correctly.
         """
-        self.assertEqual(self.env['+'](2,3), 5)
-        self.assertEqual(self.env['-'](2,3), -1)
-        self.assertEqual(self.env['*'](2,3), 6)
-        self.assertEqual(self.env['/'](3,2), 1.5)
-        self.assertEqual(self.env['%'](3,2), 1)
+        self.assertEqual(self.env['+'](2, 3), 5)
+        self.assertEqual(self.env['-'](2, 3), -1)
+        self.assertEqual(self.env['*'](2, 3), 6)
+        self.assertEqual(self.env['/'](3, 2), 1.5)
+        self.assertEqual(self.env['%'](3, 2), 1)
 
     def test_boolean(self):
         """
         Checks that boolean operators works.
         """
-        self.assertFalse(self.env['<'](3,2))
-        self.assertTrue(self.env['>'](3,2))
-        self.assertTrue(self.env['>='](3,3))
-        self.assertFalse(self.env['<='](3,2))
-        self.assertTrue(self.env['='](3,3))
+        self.assertFalse(self.env['<'](3, 2))
+        self.assertTrue(self.env['>'](3, 2))
+        self.assertTrue(self.env['>='](3, 3))
+        self.assertFalse(self.env['<='](3, 2))
+        self.assertTrue(self.env['='](3, 3))
         self.assertTrue(self.env['and'](True, True))
         self.assertTrue(self.env['or'](True, False))
 
@@ -178,10 +178,10 @@ class EnvironmentFactoryTestCase(unittest.TestCase):
         """
         Checks that list operations works properly.
         """
-        self.assertEqual(self.env['list'](1,2,3), [1,2,3])
-        self.assertEqual(self.env['car']([1,2,3]), 1)
-        self.assertEqual(self.env['cdr']([1,2,3]), [2,3])
-        self.assertEqual(self.env['len']([1,2,3]), 3)
+        self.assertEqual(self.env['list'](1, 2, 3), [1, 2, 3])
+        self.assertEqual(self.env['car']([1, 2, 3]), 1)
+        self.assertEqual(self.env['cdr']([1, 2, 3]), [2, 3])
+        self.assertEqual(self.env['len']([1, 2, 3]), 3)
 
     @patch('lispy.print', create=True)
     def test_display(self, print_mock):
@@ -289,7 +289,7 @@ class EvalTestCase(unittest.TestCase):
         Checks if a lambda involving another lambda works.
         """
         env = Environment()
-        env['+'] = lambda x,y:x+y # simple add operator
+        env['+'] = lambda x, y: x+y # simple add operator
         prog = ['lambda', ['x', 'y'], [Identifier('+'), Identifier('x'), Identifier('y')]]
         f = eval_prog(prog, env)
         self.assertEqual(5, f(3, 2))
