@@ -207,6 +207,15 @@ class EnvironmentFactoryTestCase(unittest.TestCase):
         self.env['displayln'](12)
         print_mock.assert_called_once_with(12)
 
+    def test_cons(self):
+        """
+        Checks that the cons operation works.
+        """
+        a = 1
+        b = [2, 3]
+        res = self.env['cons'](a, b)
+        self.assertEqual(res, [1, 2, 3])
+
 
 class EvalTestCase(unittest.TestCase):
     def test_eval_litterals(self):

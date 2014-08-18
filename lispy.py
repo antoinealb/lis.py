@@ -74,6 +74,7 @@ def create_base_env():
     env['car'] = lambda l: l[0]
     env['cdr'] = lambda l: l[1:]
     env['len'] = len
+    env['cons'] = lambda car, cdr: [car] + cdr
 
     env['display'] = lambda l: print(l, end='')
     env['displayln'] = lambda l: print(l)
