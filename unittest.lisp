@@ -6,9 +6,12 @@
 (set! should
   (lambda (assertion msg)
     (if assertion
-      (set! testsSuccess (+ testsSuccess 1))
       (begin
-        (display (+ "Test failed : " msg))
+        (set! testsSuccess (+ testsSuccess 1))
+        (display ".")
+        )
+      (begin
+        (displayln (+ "Test failed : " msg))
         (set! testsFailed (+ testsFailed 1))
         )
       )
@@ -23,9 +26,12 @@
 
 (set! testEnd
   (lambda ()
-    (if (= testsFailed 0)
-      (display "All tests ok")
-      (display "Some tests failed")
+    (begin
+      (displayln "")
+      (if (= testsFailed 0)
+        (displayln "All tests ok")
+        (displayln "Some tests failed")
+        )
       )
     )
   )
