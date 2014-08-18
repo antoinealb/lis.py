@@ -22,6 +22,7 @@ class AtomTestCase(unittest.TestCase):
         Checks if we can create an atom from a string.
         """
         self.assertEqual(atom('foo'), 'foo')
+        self.assertIsInstance(atom('foo'), Identifier)
 
 class TokenizerTestCase(unittest.TestCase):
     def test_simple_list(self):
@@ -60,6 +61,16 @@ class TokenizerTestCase(unittest.TestCase):
         prog = '(1 2' # list not terminated
         with self.assertRaises(LispSyntaxError):
             tokenize(prog)
+
+    def test_string_literals(self):
+        """
+        Checks that we can use string literals.
+        """
+        prog = tokenize('("foo")')
+        self.assertEqual(prog, ['foo'])
+
+        prog = tokenize('("foo bar 2000")')
+        self.assertEqual(prog, ['foo bar 2000'])
 
 class EnvironmentTestCase(unittest.TestCase):
 
@@ -205,7 +216,7 @@ class EvalTestCase(unittest.TestCase):
         Checks that we can set then get a variable.
         """
         env = Environment(foo=42)
-        result = eval_prog('foo', env)
+        result = eval_prog(Identifier('foo'), env)
         self.assertEqual(result, 42)
 
     def test_if_true(self):
@@ -230,7 +241,7 @@ class EvalTestCase(unittest.TestCase):
         works too.
         """
         env = Environment(cond=0)
-        prog = ['if', 'cond', 1, 0]
+        prog = ['if', Identifier('cond'), 1, 0]
         result = eval_prog(prog, env)
         self.assertEqual(result, 0)
 
@@ -240,11 +251,11 @@ class EvalTestCase(unittest.TestCase):
         """
         env = Environment(foo=42, bar=84)
 
-        prog = ['if', 1, 'foo', 'bar']
+        prog = ['if', 1, Identifier('foo'), Identifier('bar')]
         result = eval_prog(prog, env)
         self.assertEqual(result, 42)
 
-        prog = ['if', 0, 'foo', 'bar']
+        prog = ['if', 0, Identifier('foo'), Identifier('bar')]
         result = eval_prog(prog, env)
         self.assertEqual(result, 84)
 
@@ -254,14 +265,14 @@ class EvalTestCase(unittest.TestCase):
         """
         env = Environment()
         env['f'] = lambda x: x**2
-        prog = ['f', 3]
+        prog = [Identifier('f'), 3]
         self.assertEqual(eval_prog(prog, env), 9)
 
     def test_can_create_lambda(self):
         """
         Checks if we can create a simple lambda.
         """
-        prog = ['lambda', ['x'], 'x']
+        prog = ['lambda', ['x'], Identifier('x')]
         f = eval_prog(prog)
         self.assertEqual(3, f(3))
 
@@ -271,7 +282,7 @@ class EvalTestCase(unittest.TestCase):
         """
         env = Environment()
         env['+'] = lambda x,y:x+y # simple add operator
-        prog = ['lambda', ['x', 'y'], ['+', 'x', 'y']]
+        prog = ['lambda', ['x', 'y'], [Identifier('+'), Identifier('x'), Identifier('y')]]
         f = eval_prog(prog, env)
         self.assertEqual(5, f(3, 2))
 
@@ -282,7 +293,7 @@ class EvalTestCase(unittest.TestCase):
         env = Environment()
         env['foo'] = MagicMock(name='foo')
 
-        prog = ['begin', ['foo', 1], 42]
+        prog = ['begin', [Identifier('foo'), 1], 42]
 
         val = eval_prog(prog, env)
 
@@ -307,6 +318,15 @@ class EvalTestCase(unittest.TestCase):
 
         with self.assertRaises(LispMissingParameterError):
             eval_prog(prog, env)
+
+    def test_eval_string_litterals(self):
+        """
+        Checks that evaluating a string litteral doesnt return a variable but
+        the string itself.
+        """
+        env = Environment(foo=42)
+        prog = 'foo'
+        self.assertEqual(eval_prog(prog, env), 'foo')
 
 
 class IntegrationTesting(unittest.TestCase):

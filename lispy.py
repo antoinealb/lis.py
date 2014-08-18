@@ -14,6 +14,11 @@ class LispMissingParameterError(LispRuntimeError):
     """
     pass
 
+class Identifier(str):
+    """
+    Class used to differentiate identifiers and keywords from strings.
+    """
+
 class Environment(dict):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -79,7 +84,7 @@ def atom(string):
         try:
             return float(string)
         except ValueError:
-            return string
+            return Identifier(string)
 
 def tokenize(prog):
     """
@@ -95,6 +100,11 @@ def tokenize(prog):
 
             elif val == ')':
                 return result
+
+            elif val.startswith('"'):
+                while not val.endswith('"'):
+                    val = val + " " + prog.pop(0)
+                result.append(val[1:-1])
 
             else:
                 result.append(atom(val))
@@ -144,8 +154,12 @@ def eval_prog(prog, env=None):
         f.argument_count = len(argument_names)
         return f
 
-    if isinstance(prog, str):
+    if isinstance(prog, Identifier):
         return env[prog]
+
+    # String literals
+    if isinstance(prog, str):
+        return prog
 
     if prog[0] == 'begin':
         val = None
