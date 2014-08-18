@@ -183,6 +183,14 @@ class EnvironmentFactoryTestCase(unittest.TestCase):
         self.assertEqual(self.env['cdr']([1, 2, 3]), [2, 3])
         self.assertEqual(self.env['len']([1, 2, 3]), 3)
 
+    def test_booleans(self):
+        """
+        Checks that boolean constant works.
+        """
+        self.assertTrue(self.env['#t'])
+        self.assertFalse(self.env['#f'])
+        self.assertFalse(self.env['not'](True))
+
     @patch('lispy.print', create=True)
     def test_display(self, print_mock):
         """

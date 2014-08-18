@@ -10,4 +10,8 @@
 (set! increment (lambda (x) (+ x 1)))
 (shouldEqual (increment 3) 4 "Simple incrementer lambda")
 
+; Boolean constants
+(should #t "Boolean true should be true")
+(should (not #f) "Boolean false should be false")
+
 (testEnd)

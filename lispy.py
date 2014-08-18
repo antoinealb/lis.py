@@ -64,6 +64,11 @@ def create_base_env():
 
     env['='] = lambda x, y: x == y
 
+    # Boolean constants
+    env['#t'] = True
+    env['#f'] = False
+    env['not'] = lambda b: not b
+
     # List operations
     env['list'] = lambda *args: list(args)
     env['car'] = lambda l: l[0]
