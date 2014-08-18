@@ -137,6 +137,13 @@ def eval_prog(prog, env=None):
     if isinstance(prog, int) or isinstance(prog, float):
         return prog
 
+    if isinstance(prog, Identifier):
+        return env[prog]
+
+    # String literals
+    if isinstance(prog, str):
+        return prog
+
     if prog[0] == 'set!':
         varname = prog[1]
         varvalue = eval_prog(prog[2], env)
@@ -153,13 +160,6 @@ def eval_prog(prog, env=None):
             return eval_prog(expression, updated_env)
 
         return f
-
-    if isinstance(prog, Identifier):
-        return env[prog]
-
-    # String literals
-    if isinstance(prog, str):
-        return prog
 
     if prog[0] == 'begin':
         val = None

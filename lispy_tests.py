@@ -336,6 +336,13 @@ class EvalTestCase(unittest.TestCase):
         prog = 'foo'
         self.assertEqual(eval_prog(prog, env), 'foo')
 
+    def test_eval_empty_string(self):
+        """
+        Checks if we can use empty strings, because that was a bug we got.
+        """
+        prog = ""
+        self.assertEqual(eval_prog(prog), '')
+
 
 class IntegrationTesting(unittest.TestCase):
     """
