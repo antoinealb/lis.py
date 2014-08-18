@@ -151,7 +151,6 @@ def eval_prog(prog, env=None):
             updated_env = Environment(env, zip(argument_names, args))
             return eval_prog(expression, updated_env)
 
-        f.argument_count = len(argument_names)
         return f
 
     if isinstance(prog, Identifier):
