@@ -30,11 +30,4 @@
     )
   )
 
-; Some simple sanity tests
-(shouldEqual 4 (+ 1 3) "Adding two numbers")
-(shouldEqual 4 (car (list 4 3 2)) "Taking the head of a list")
-(shouldEqual (list 4 3 2) (cdr (list 4 3 2)) "Taking the head of a list")
-
-(testEnd)
-
 
