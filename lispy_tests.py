@@ -184,11 +184,19 @@ class EnvironmentFactoryTestCase(unittest.TestCase):
         self.assertEqual(self.env['len']([1,2,3]), 3)
 
     @patch('lispy.print', create=True)
-    def test_io(self, print_mock):
+    def test_display(self, print_mock):
         """
-        Tests IO operations.
+        Checks that display prints without any end line.
         """
         self.env['display'](12)
+        print_mock.assert_called_once_with(12, end='')
+
+    @patch('lispy.print', create=True)
+    def test_displayln(self, print_mock):
+        """
+        Checks that display prints without any end line.
+        """
+        self.env['displayln'](12)
         print_mock.assert_called_once_with(12)
 
 

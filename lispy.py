@@ -70,7 +70,8 @@ def create_base_env():
     env['cdr'] = lambda l: l[1:]
     env['len'] = len
 
-    env['display'] = lambda l: print(l)
+    env['display'] = lambda l: print(l, end='')
+    env['displayln'] = lambda l: print(l)
 
     return env
 
